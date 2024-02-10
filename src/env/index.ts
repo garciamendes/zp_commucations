@@ -5,7 +5,8 @@ const envSchema = zod.object({
   NODE_ENV: zod.enum(['dev', 'production', 'test']).default('dev'),
   PORT: zod.coerce.number().default(3333),
   JWT_SECRET: zod.string(),
-  CORS_ORIGIN: zod.string()
+  CORS_ORIGIN: zod.string(),
+  DATABASE_URL: zod.string()
 })
 
 const _env = envSchema.safeParse(process.env)
