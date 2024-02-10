@@ -4,6 +4,7 @@ import FastifyCookie from '@fastify/cookie'
 import FastifyCors from '@fastify/cors'
 import { ZodError } from 'zod'
 import { env } from '@/env'
+import { routesAccount } from './http/controllers/routes'
 
 export const fastify = Fastify()
 
@@ -22,9 +23,14 @@ fastify.register(FastifyJWT, {
 })
 fastify.register(FastifyCookie)
 
+// Routes
+fastify.register(routesAccount, { prefix: 'api/account' })
+
+
+
 fastify.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {
-    return reply.status(400).send({ message: 'Validation error: ', issue: error.format() })
+    return reply.status(400).send({ message: 'Validation error: ', issues: error.issues })
   }
 
   if (env.NODE_ENV !== 'production') {
