@@ -17,13 +17,37 @@ export const createAccount = async (request: FastifyRequest, reply: FastifyReply
   }
 
   try {
-    const account = await prisma.account.create({
-      data: { email },
-      include: {
-        friends: true
-      }
+    const account = await prisma.$transaction(async (p) => {
+      const account = await prisma.account.create({
+        data: {
+          email,
+        },
+        include: {
+          friends: {
+            select: {
+              avatar: true,
+              email: true,
+              id: true,
+              name: true,
+            }
+          },
+          invite: {
+            select: {
+              invitations: true
+            }
+          }
+        },
+      })
+
+      await p.invite.create({
+        data: {
+          accountId: account.id
+        }
+      })
+
+      return account
     })
-    const replyAccountData = exclude(account, ["password_hash"])
+    const replyAccountData = exclude(account, ["password_hash", "selfAccountId"])
 
     return reply.status(201).send(replyAccountData)
   } catch (error) {

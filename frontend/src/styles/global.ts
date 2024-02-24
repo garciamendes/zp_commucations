@@ -23,4 +23,28 @@ export const GlobalStyle = createGlobalStyle`
     font-family: 'Inter', sans-serif;
     background-color: var(--slate-900);
   }
+
+  .animation-loader {
+    animation: spin 1s linear infinite;
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  }
+
+  .avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 45px;
+    width: 45px;
+    border-radius: 50%;
+    border: 1px solid var(--white);
+    color: var(--white);
+  }
 `

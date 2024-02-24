@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { invitationAddUser } from "@/utils/invitation-add-user-pub-sub";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 
@@ -10,24 +11,62 @@ export const addFriend = async (request: FastifyRequest, reply: FastifyReply) =>
 
   const { email, emailFriend } = createBody.parse(request.body)
 
-  const accountExist = await prisma.account.findFirst({ where: { email: email } })
-  const accountFriendExist = await prisma.account.findFirst({ where: { email: emailFriend } })
+  if (emailFriend === email)
+    return reply.status(400).send({ message: "Can't self invite" })
+
+  const accountExist = await prisma.account.findFirst({
+    where: { email: email },
+    include: {
+      friends: {
+        select: {
+          email: true
+        }
+      },
+      invite: true
+    }
+  })
+  const accountFriendExist = await prisma.account.findFirst({
+    where: { email: emailFriend },
+    include: {
+      friends: {
+        select: { email: true }
+      },
+      invite: true
+    }
+  })
+
   if (!accountExist || !accountFriendExist) {
     return reply.status(404).send({ message: 'Email Not found' })
   }
 
-  try {
+  const listInvitationsAccountFriend = await prisma.invite.findUnique({
+    where: { accountId: accountFriendExist.id }
+  })
 
-    await prisma.account.update({
-      where: { email },
+  if (listInvitationsAccountFriend?.invitations.includes(accountExist.email))
+    return reply.status(400).send({ message: 'invitation has already been sent' })
+
+  if (
+    accountFriendExist?.friends.includes({ email: accountExist.email }) ||
+    accountExist?.friends.includes({ email: accountFriendExist.email })
+  )
+    return reply.status(400).send({ message: 'Friend has already exist' })
+
+  try {
+    await prisma.invite.update({
+      where: { accountId: accountFriendExist.id },
       data: {
-        friends: {
-          connect: { email: emailFriend }
+        invitations: {
+          push: accountExist.email
         }
       }
     })
 
-    return reply.status(200).send()
+    invitationAddUser.public(accountFriendExist.email, {
+      email: accountExist.email
+    })
+
+    return reply.status(200).send({ message: 'Invitation send successful' })
   } catch (error) {
     return reply.status(400).send({ message: error })
   }

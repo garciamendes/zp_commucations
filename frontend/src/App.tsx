@@ -1,37 +1,31 @@
 import { Toaster } from "sonner";
-import { Login } from "./containers/Auth/Login";
-import { Register } from "./containers/Auth/register";
-import ErrorPage from "./containers/error-page";
-import { Home } from "./containers/home";
 import { GlobalStyle } from "./styles/global"
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { RouterProvider } from "react-router-dom";
 import { UserProvider } from "./contexts/userContext";
+import { router } from "./routes";
+import {
+  QueryClient,
+  QueryClientProvider
+} from '@tanstack/react-query'
+import { ConversationProvider } from "./contexts/ConversationContext";
+
+const queryClient = new QueryClient()
 
 export const App = () => {
 
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <Home />,
-      errorElement: <ErrorPage />,
-      children: [
-        {
-          path: "/login",
-          element: <Login />,
-        },
-        {
-          path: "/register",
-          element: <Register />,
-        },
-      ]
-    }
-  ])
-
   return (
-    <UserProvider>
-      <GlobalStyle />
-      <Toaster position="top-right" richColors />
-      <RouterProvider router={router} />
-    </UserProvider>
+    <QueryClientProvider client={queryClient}>
+      <UserProvider>
+        <ConversationProvider>
+          <GlobalStyle />
+          <Toaster
+            loadingIcon
+            duration={5000}
+            position="top-right"
+            richColors />
+          <RouterProvider router={router} />
+        </ConversationProvider>
+      </UserProvider>
+    </QueryClientProvider>
   )
 }

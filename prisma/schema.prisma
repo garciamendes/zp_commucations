@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -25,4 +25,24 @@ model Account {
 
   selfAccount   Account? @relation("Friend", fields: [selfAccountId], references: [id])
   selfAccountId String?
+
+  invite        Invite?
+  Conversations Conversations[]
+
+  @@index(fields: [email])
+}
+
+model Invite {
+  id          String   @id @default(uuid())
+  invitations String[]
+
+  account   Account @relation(fields: [accountId], references: [id])
+  accountId String  @unique
+}
+
+model Conversations {
+  id String @id @default(uuid())
+
+  owner     Account @relation(fields: [accountId], references: [id])
+  accountId String
 }

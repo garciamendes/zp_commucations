@@ -1,4 +1,9 @@
-import { ReactNode, createContext, useState } from "react";
+import { ReactNode, createContext, useEffect, useRef, useState } from "react";
+import { isObjectEmpty } from "../utils";
+import { api } from "../service/api";
+import { AxiosError, AxiosResponse } from "axios";
+import { toast } from "sonner";
+import { InvitationsProvider } from "./invitationsContext";
 
 export interface IUser {
   id: string
@@ -26,6 +31,7 @@ export const default_inital_state_user: IUser = {
 export interface IUserContext {
   user: IUser
   setStateUser: (data: IUser) => void
+  setFriends: (friend: Pick<IUser, 'id' | 'avatar' | 'email' | 'name'>[]) => void
 }
 
 export const UserContext = createContext({} as IUserContext)
@@ -33,20 +39,30 @@ export const UserContext = createContext({} as IUserContext)
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<IUser>(default_inital_state_user)
 
-  const setStateUser = (data: IUser) => {
+  function setStateUser (data: IUser) {
     setUser(data)
+  }
+
+  const setFriends = (data: Pick<IUser, 'id' | 'avatar' | 'email' | 'name'>[]) => {
+    setUser(prevState => ({
+      ...prevState,
+      friends: data
+    }))
   }
 
   return (
     <UserContext.Provider
-     value={{
-      user,
+      value={{
+        user,
 
-      // Fuctions
-      setStateUser
-     }}
+        // Fuctions
+        setStateUser,
+        setFriends
+      }}
     >
-      {children}
+      <InvitationsProvider>
+        {children}
+      </InvitationsProvider>
     </UserContext.Provider>
   )
 }
