@@ -66,6 +66,11 @@ export const ContainerMessageAndSendMessage = styled.div`
         background-color: var(--slate-600);
       }
     }
+
+    .disabled-enter {
+      pointer-events: none;
+      opacity: .3;
+    }
   }
 `
 

@@ -2,7 +2,6 @@ import { Check, X } from "lucide-react"
 import { IInvite, InvitesContext } from "../../../contexts/invitationsContext"
 import { useContext, useEffect } from "react"
 import { toast } from "sonner"
-import { api } from "../../../service/api"
 import { ILastMessageWs, useInvites } from "../../../hooks/useInvites"
 import { useCurrentUser } from "../../../hooks/useUser"
 import useWebSocket from "react-use-websocket"
@@ -27,7 +26,7 @@ export const Invites = ({ isActiveNotifications }: IInviteProps) => {
     }
 
     setStateInvitations(data as IInvite)
-  }, [])
+  }, [isLoading, error])
 
   useEffect(() => {
     const lastInvite: ILastMessageWs = lastMessage ? JSON.parse(lastMessage.data) : null

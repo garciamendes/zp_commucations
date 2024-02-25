@@ -43,6 +43,18 @@ model Invite {
 model Conversations {
   id String @id @default(uuid())
 
-  owner     Account @relation(fields: [accountId], references: [id])
-  accountId String
+  owner          Account @relation(fields: [accountOwnerId], references: [id])
+  accountOwnerId String
+
+  friendEmail String @unique
+
+  messages      Json[]
+  // {
+  // email -> quem está mandando a message
+  // message -> o conteudo
+  // created -> o tempo que foi mandado
+  // }
+  secretChatKey String
+
+  @@index(fields: [friendEmail])
 }

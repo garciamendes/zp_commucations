@@ -7,6 +7,8 @@ import { authenticateAccount } from "./authenticate";
 import { verifyJWT } from "../middlewares/verify-jwt";
 import { getInvites } from "./getInvites";
 import { acceptOrNotInvite } from "./acceptInvite";
+import { getConversation } from "./getConversation";
+import { sendMessageConversation } from "./sendMessageConversation";
 
 export const routesAccount = async (route: FastifyInstance) => {
   route.post('/', createAccount)
@@ -16,4 +18,6 @@ export const routesAccount = async (route: FastifyInstance) => {
   route.get('/get_invites', { onRequest: [verifyJWT] }, getInvites)
   route.get('/current_user', { onRequest: [verifyJWT] }, getCurrentAccount)
   route.post('/accept_or_not_invite', { onRequest: [verifyJWT] }, acceptOrNotInvite)
+  route.get('/conversation/:friendEmail', { onRequest: [verifyJWT] }, getConversation)
+  route.post('/conversation/:secretKey', { onRequest: [verifyJWT] }, sendMessageConversation)
 }

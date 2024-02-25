@@ -20,6 +20,7 @@ const Home = () => {
   const [isActiveAddUser, setIsActiveAddUser] = useState(false)
   const [isActiveNotifications, setIsActiveNotifications] = useState(false)
 
+
   useEffect(() => {
     if (loading)
       return
@@ -69,9 +70,9 @@ const Home = () => {
                   <div className="info-friend">
                     <span>{friend.email}</span>
 
-                    <span className="message">
-                      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Omnis vel nesciunt neque. Blanditiis eum nihil numquam quibusdam aut, praesentium quasi nobis, illo sequi nam ipsam ut adipisci accusamus pariatur reprehenderit.
-                    </span>
+                    {/* <span className="message">
+                      d
+                    </span> */}
                   </div>
                 </div>
               ))

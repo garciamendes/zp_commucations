@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { invitationAddUser } from "@/utils/invitation-add-user-pub-sub";
+import { randomUUID } from "node:crypto";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 
@@ -64,6 +65,22 @@ export const addFriend = async (request: FastifyRequest, reply: FastifyReply) =>
 
     invitationAddUser.public(accountFriendExist.email, {
       email: accountExist.email
+    })
+
+    const secretKey = randomUUID()
+    await prisma.conversations.create({
+      data: {
+        friendEmail: accountFriendExist.email,
+        accountOwnerId: accountExist.id,
+        secretChatKey: secretKey
+      }
+    })
+    await prisma.conversations.create({
+      data: {
+        friendEmail: accountExist.email,
+        accountOwnerId: accountFriendExist.id,
+        secretChatKey: secretKey
+      }
     })
 
     return reply.status(200).send({ message: 'Invitation send successful' })
