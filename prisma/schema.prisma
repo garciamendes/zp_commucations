@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id       String    @id @default(uuid())
+  email    String    @unique
+  name     String?
+  avatar   String?
+  created  DateTime? @default(now())
+  modified DateTime? @updatedAt
+
+  password_hash  String?
+  is_finish_auth Boolean? @default(false)
+
+  friends Account[] @relation("Friend")
+
+  selfAccount   Account? @relation("Friend", fields: [selfAccountId], references: [id])
+  selfAccountId String?
+
+  invite        Invite?
+  Conversations Conversations[]
+
+  @@index(fields: [email])
+}
+
+model Invite {
+  id          String   @id @default(uuid())
+  invitations String[]
+
+  account   Account @relation(fields: [accountId], references: [id])
+  accountId String  @unique
+}
+
+model Conversations {
+  id String @id @default(uuid())
+
+  owner          Account @relation(fields: [accountOwnerId], references: [id])
+  accountOwnerId String
+
+  friendEmail String @unique
+
+  messages      Json[]
+  // {
+  // email -> quem está mandando a message
+  // message -> o conteudo
+  // created -> o tempo que foi mandado
+  // }
+  secretChatKey String
+
+  @@index(fields: [friendEmail])
+}
