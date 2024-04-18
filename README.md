@@ -7,7 +7,7 @@
 
 Esse projeto foi desenvolvido com as seguintes tecnologias:
 
-### Frotend
+### Frontend
   - [React by Vite](https://vitejs.dev/guide/)
   - [TypeScript](https://www.typescriptlang.org/)
   - [Styles components](https://styled-components.com/)
