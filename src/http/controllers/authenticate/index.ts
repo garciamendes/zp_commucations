@@ -14,16 +14,16 @@ export const authenticateAccount = async (request: FastifyRequest, reply: Fastif
   try {
     const account = await prisma.account.findFirst({ where: { email: email } })
     if (!account) {
-      return reply.status(404).send({ message: 'Email Not found' })
+      return reply.status(404).send({ message: 'Email não encontrado' })
     }
 
     if (!account.is_finish_auth) {
-      return reply.status(401).send({ message: 'Account not finalized' })
+      return reply.status(401).send({ message: 'Conta não foi finalizada!' })
     }
 
     const doesPasswordMatch = await compare(password, account.password_hash as string)
     if (!doesPasswordMatch)
-      return reply.status(400).send({ message: 'Error when trying to authenticate'})
+      return reply.status(400).send({ message: 'Erro ao tentar se autenticar'})
 
     const token = await reply.jwtSign(
       {},

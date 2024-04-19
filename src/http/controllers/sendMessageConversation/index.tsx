@@ -18,12 +18,26 @@ export const sendMessageConversation = async (request: FastifyRequest, reply: Fa
     const { secretKey } = paramsRequest.parse(request.params)
     const data = bodyRequest.parse(request.body)
 
-    await prisma.conversations.updateMany({
-      where: { secretChatKey: secretKey },
-      data: {
-        messages: {
-          push: data
+    await prisma.$transaction(async p => {
+      const conversations = await prisma.conversations.findMany({
+        where: {
+          secretChatKey: secretKey
         }
+      })
+
+      if (!conversation) {
+        return reply.status(404).send({ message: 'Conversa não encontrada' })
+      }
+
+      for (const conversation of conversations) {
+        await p.messages.create({
+          data: {
+            conversationsId: conversation.id,
+            email: data.email,
+            created: data.created,
+            message: data.message
+          }
+        })
       }
     })
 

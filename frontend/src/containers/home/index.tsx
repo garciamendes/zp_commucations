@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react"
-import { Bell, BellDot, UserRoundPlus } from "lucide-react"
+import { Bell, UserRoundPlus } from "lucide-react"
 import { withAuth } from "../../hooks/withAuth"
 import { ContainerMainHome, ContainerSide, ContentMain } from "./styles"
 import { InvitationAddUser } from "./addUser"
@@ -14,7 +14,7 @@ import { useCurrentUser } from "../../hooks/useUser"
 const Home = () => {
   const { user, error, loading } = useCurrentUser()
 
-  const { notification, setNotificationOff } = useContext(InvitesContext)
+  const { invites } = useContext(InvitesContext)
   const { handleSelectUserToConversation, userSelectToConversation } = useContext(ConversationContext)
 
   const [isActiveAddUser, setIsActiveAddUser] = useState(false)
@@ -33,9 +33,6 @@ const Home = () => {
 
   const handleOpenCloseNotificationAndSetOffAlart = () => {
     setIsActiveNotifications(!isActiveNotifications)
-
-    if (notification)
-      setNotificationOff()
   }
 
   return (
@@ -46,12 +43,17 @@ const Home = () => {
             <Avatar name={user?.name} />
 
             <div className="content-actions-header-side">
-              <UserRoundPlus onClick={() => setIsActiveAddUser(!isActiveAddUser)} className="icon-header-side-action" />
-              {notification ? (
-                <BellDot onClick={handleOpenCloseNotificationAndSetOffAlart} className="icon-header-side-action" />
-              ) : (
-                <Bell onClick={handleOpenCloseNotificationAndSetOffAlart} className="icon-header-side-action" />
-              )}
+              <div className="content-action-notifications">
+                <Bell onClick={handleOpenCloseNotificationAndSetOffAlart} size={30} className="icon-header-side-action" />
+
+                {invites.invitations.length > 0 && (
+                  <div className="content-amount-invites">
+                    {invites.invitations.length}
+                  </div>
+                )}
+              </div>
+
+              <UserRoundPlus onClick={() => setIsActiveAddUser(!isActiveAddUser)} size={30} className="icon-header-side-action" />
             </div>
           </div>
 

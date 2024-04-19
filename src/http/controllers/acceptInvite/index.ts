@@ -17,10 +17,10 @@ export const acceptOrNotInvite = async (request: FastifyRequest, reply: FastifyR
     const invite = await prisma.invite.findUnique({ where: { accountId: user_id } })
 
     if (!invite)
-      return reply.status(404).send({ message: 'Account not found!' })
+      return reply.status(404).send({ message: 'Conta não encontrda' })
 
     if (!invite?.invitations.includes(emailToConfirmAccept))
-      return reply.status(400).send('Email not foun in your invites')
+      return reply.status(400).send('Email não encontrado na sua lista de convites')
 
     const invitesWithoutEmailAccept = invite.invitations.filter(email => email !== emailToConfirmAccept)
     if (!accept) {
@@ -39,7 +39,7 @@ export const acceptOrNotInvite = async (request: FastifyRequest, reply: FastifyR
     const accountFriend = await prisma.account.findUnique({ where: { email: emailToConfirmAccept } })
 
     if (!accountFriend)
-      return reply.status(404).send({ message: 'Account not found!' })
+      return reply.status(404).send({ message: 'Conta não encontrada!' })
 
     const myAccount = await prisma.account.update({
       where: { id: user_id },

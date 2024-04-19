@@ -19,16 +19,12 @@ export interface IInvitationsContext {
   invites: IInvite
   setStateInvitations: (data: IInvite) => void
   pushNewInvite: (email: string) => void
-  notification: boolean
-  setNotificationOff: () => void
-  setNotificationOn: () => void
 }
 
 export const InvitesContext = createContext({} as IInvitationsContext)
 
 export const InvitationsProvider = ({ children }: { children: ReactNode }) => {
   const [invites, setInvites] = useState<IInvite>(default_inital_state_invitations)
-  const [notification, setNotification] = useState(false)
 
   const setStateInvitations = (data: IInvite) => {
     setInvites(data)
@@ -39,7 +35,6 @@ export const InvitationsProvider = ({ children }: { children: ReactNode }) => {
       ...prevState,
       invitations: [email, ...invites.invitations]
     }))
-    setNotification(true)
     toast(
       <div style={{
         display: 'flex',
@@ -52,25 +47,14 @@ export const InvitationsProvider = ({ children }: { children: ReactNode }) => {
     )
   }
 
-  const setNotificationOff = () => {
-    setNotification(false)
-  }
-
-  const setNotificationOn = () => {
-    setNotification(true)
-  }
-
   return (
     <InvitesContext.Provider
       value={{
         invites: invites,
-        notification,
 
         // Fuctions
         setStateInvitations,
         pushNewInvite: addNewInvite,
-        setNotificationOff,
-        setNotificationOn
       }}
     >
       {children}

@@ -13,7 +13,7 @@ export const createAccount = async (request: FastifyRequest, reply: FastifyReply
 
   const accountExist = await prisma.account.findFirst({ where: { email: email } })
   if (accountExist) {
-    return reply.status(403).send({ message: 'Email Already exists' })
+    return reply.status(403).send({ message: 'Email esse já existe' })
   }
 
   try {

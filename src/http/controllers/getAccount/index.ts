@@ -27,7 +27,7 @@ export const getCurrentAccount = async (request: FastifyRequest, reply: FastifyR
     })
 
     if (!account)
-      return reply.status(404).send({ message: 'Account not found!' })
+      return reply.status(404).send({ message: 'Conta não encontrada!' })
 
     const accountResults = exclude(account, ['password_hash', 'selfAccountId'])
     return reply.status(200).send(accountResults)

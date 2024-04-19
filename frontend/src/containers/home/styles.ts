@@ -40,10 +40,31 @@ export const ContainerSide = styled.div`
 
     .content-actions-header-side {
       display: flex;
-      gap: .6rem;
+      gap: 1rem;
 
       .icon-header-side-action {
         cursor: pointer;
+      }
+
+      .content-action-notifications {
+        position: relative;
+        display: flex;
+
+        .content-amount-invites {
+          position: absolute;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          top: -6px;
+          right: -5px;
+          height: 20px;
+          width: 20px;
+          font-size: .9rem;
+          color: var(--white);
+          background: var(--slate-500);
+          padding: .7rem;
+          border-radius: 50%;
+        }
       }
     }
 

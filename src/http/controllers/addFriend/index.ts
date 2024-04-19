@@ -13,7 +13,7 @@ export const addFriend = async (request: FastifyRequest, reply: FastifyReply) =>
   const { email, emailFriend } = createBody.parse(request.body)
 
   if (emailFriend === email)
-    return reply.status(400).send({ message: "Can't self invite" })
+    return reply.status(400).send({ message: "Não pode se auto convidar" })
 
   const accountExist = await prisma.account.findFirst({
     where: { email: email },
@@ -37,7 +37,7 @@ export const addFriend = async (request: FastifyRequest, reply: FastifyReply) =>
   })
 
   if (!accountExist || !accountFriendExist) {
-    return reply.status(404).send({ message: 'Email Not found' })
+    return reply.status(404).send({ message: 'Email não encontrado' })
   }
 
   const listInvitationsAccountFriend = await prisma.invite.findUnique({
@@ -45,13 +45,13 @@ export const addFriend = async (request: FastifyRequest, reply: FastifyReply) =>
   })
 
   if (listInvitationsAccountFriend?.invitations.includes(accountExist.email))
-    return reply.status(400).send({ message: 'invitation has already been sent' })
+    return reply.status(400).send({ message: 'Convite já foi enviado' })
 
   if (
     accountFriendExist?.friends.includes({ email: accountExist.email }) ||
     accountExist?.friends.includes({ email: accountFriendExist.email })
   )
-    return reply.status(400).send({ message: 'Friend has already exist' })
+    return reply.status(400).send({ message: 'Já se encontra na sua lista de amizade' })
 
   try {
     await prisma.invite.update({
@@ -83,7 +83,7 @@ export const addFriend = async (request: FastifyRequest, reply: FastifyReply) =>
       }
     })
 
-    return reply.status(200).send({ message: 'Invitation send successful' })
+    return reply.status(200).send({ message: 'Convite enviado com sucesso' })
   } catch (error) {
     return reply.status(400).send({ message: error })
   }

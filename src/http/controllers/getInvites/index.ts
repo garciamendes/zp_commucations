@@ -8,7 +8,7 @@ export const getInvites = async (request: FastifyRequest, reply: FastifyReply) =
     const invite = await prisma.invite.findUnique({ where: { accountId: user_id } })
 
     if (!invite)
-      return reply.status(404).send({ message: 'Account not found!' })
+      return reply.status(404).send({ message: 'Conta não encontrada!' })
 
     return reply.status(200).send(invite)
   } catch (error) {

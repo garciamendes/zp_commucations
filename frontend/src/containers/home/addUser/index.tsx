@@ -37,11 +37,7 @@ export const InvitationAddUser = ({ isActiveAddUser }: IInvitationAddUserProps) 
       emailFriend: data.emailFriend
     })
 
-    if (response.status === 200) {
-      return response.data
-    } else {
-      return response?.data.message
-    }
+    return response.data
   }
 
   const handleInvitationAddUSer = async (data: invitationAddUser) => {
@@ -52,10 +48,10 @@ export const InvitationAddUser = ({ isActiveAddUser }: IInvitationAddUserProps) 
 
         return 'Convite enviado com sucesso!'
       },
-      error: (error: AxiosError<any>) => {
-        const message = error.response?.data.message
-
-        return message
+      error: (err) => {
+        if (err.response.data.message)
+          return err.response.data.message
+        return 'Erro ao tentar adicionar o usuário'
       },
     })
   }

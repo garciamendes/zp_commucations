@@ -35,36 +35,27 @@ export const getConversation = async (request: FastifyRequest, reply: FastifyRep
       where: {
         accountOwnerId: account?.id,
         friendEmail: accountFriend?.email
+      },
+      select: {
+        id: true,
+        friendEmail: true,
+        owner: true,
+        secretChatKey: true,
+        messages: {
+          select: {
+            email: true,
+            created: true,
+            message: true
+          },
+          orderBy: {
+            created: 'asc'
+          }
+        }
       }
     })
 
-    let conversationResponse = {
-      accountOwnerId: conversation?.accountOwnerId,
-      friendEmail: conversation?.friendEmail,
-      id: conversation?.id,
-      secretChatKey: conversation?.secretChatKey,
-      messages: [] as Array<IMessage>
-    }
-    const n: Array<IMessage> = insertionSort(conversation?.messages as Array<object>)
-    conversationResponse.messages = n
-
-    return reply.status(200).send(conversationResponse)
+    return reply.status(200).send(conversation)
   } catch (error) {
     return reply.status(400).send({ message: error })
   }
-}
-
-function insertionSort(arr: Array<any>) {
-  for (let i = 1; i < arr.length; i++) {
-    let j = i - 1
-
-    const temp = arr[i]
-    while (j >= 0 && new Date(arr[j].created) < new Date(temp.created)) {
-      arr[j + 1] = arr[j]
-      j--
-    }
-    arr[j + 1] = temp
-  }
-
-  return arr
 }

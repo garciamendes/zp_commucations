@@ -46,15 +46,20 @@ model Conversations {
   owner          Account @relation(fields: [accountOwnerId], references: [id])
   accountOwnerId String
 
-  friendEmail String @unique
-
-  messages      Json[]
-  // {
-  // email -> quem está mandando a message
-  // message -> o conteudo
-  // created -> o tempo que foi mandado
-  // }
+  friendEmail   String     @unique
   secretChatKey String
+  messages      Messages[]
 
   @@index(fields: [friendEmail])
+}
+
+model Messages {
+  id              String        @id @default(uuid())
+  conversations   Conversations @relation(fields: [conversationsId], references: [id])
+  conversationsId String
+  email           String
+  message         String
+  created         DateTime
+
+  @@index(fields: [email])
 }
