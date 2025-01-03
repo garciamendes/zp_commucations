@@ -54,7 +54,10 @@ export const Login = () => {
         console.error(error)
         const message = error.response?.data.message as string
 
-        toast.error(message)
+        if (message)
+          toast.error(message)
+        else
+          toast.error('Erro ao tentar fazer o login')
       })
       .finally(() => setIsLoading(false))
   }
@@ -75,12 +78,12 @@ export const Login = () => {
         <button
           disabled={isLoading}
           onClick={handleSubmit(handleSendLogin)}>
-            {isLoading ? (
-              <Loader2 className="animation-loader" size={15} />
-            ) : (
-              <span>Entrar</span>
-            )}
-          </button>
+          {isLoading ? (
+            <Loader2 className="animation-loader" size={15} />
+          ) : (
+            <span>Entrar</span>
+          )}
+        </button>
       </ContainerEnterInputs>
 
       <Link to='/'>

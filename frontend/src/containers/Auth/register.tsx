@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom"
 import { ContainerAuth, ContainerEnterInputs } from "./styles"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Loader2 } from "lucide-react"
 import { useEffect, useState } from "react"
 import { api } from "../../service/api"
 import { toast } from "sonner"
@@ -75,6 +75,7 @@ export const Register = () => {
 
       return response.data
     } catch (error) {
+      console.error(error)
       const err = error as AxiosError
       throw err.response?.data
     }
@@ -82,15 +83,23 @@ export const Register = () => {
 
   const handleCreateUser = async (data: ICreateUser) => {
     toast.promise(createUser(data), {
-      loading: 'Carregando...',
+      loading: <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <Loader2 size={30} />
+        Carregando...
+      </span>,
       success: (data: IUser) => {
-        resetField('email')
         setIsLoading(false)
-        setIsStepRegister('pass')
         localStorage.setItem('email_user', data.email)
+        resetField('email')
+        setIsStepRegister('pass')
         return 'Usuário criado com sucesso'
       },
       error: (error) => {
+        console.error(error)
+
+        if (!error?.message)
+          return 'Erro ao tentar criar um novo usuário'
+
         return error?.message
       },
     })
@@ -100,7 +109,6 @@ export const Register = () => {
     try {
       setIsLoading(true)
 
-
       const response = await api.post('api/account/finish_account', {
         email: email_user as string,
         password: data.password,
@@ -109,6 +117,8 @@ export const Register = () => {
 
       return response
     } catch (error) {
+      console.error(error)
+
       const err = error as AxiosError
       return err.response?.data
     }
@@ -116,18 +126,24 @@ export const Register = () => {
 
   const handleDefinePassword = async (data: IDefinePassword) => {
     toast.promise(definePassword(data), {
-      loading: 'Carregando...',
+      loading: <span style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        <Loader2 size={30} />
+        Carregando...
+      </span>,
       success: (_response: AxiosResponse) => {
+        setIsLoading(false)
         resetDefinePassword({
           password: '',
           confirm_password: ''
         })
-        setIsLoading(false)
         navigate('/login')
 
         return 'Senha definida com sucesso!'
       },
       error: (error) => {
+        if (!error?.message)
+          return 'Erro ao tentar criar um novo usuário'
+
         return error?.message
       },
     })

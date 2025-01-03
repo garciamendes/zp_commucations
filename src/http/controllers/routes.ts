@@ -11,13 +11,25 @@ import { getConversation } from "./getConversation";
 import { sendMessageConversation } from "./sendMessageConversation";
 
 export const routesAccount = async (route: FastifyInstance) => {
-  route.post('/', createAccount)
-  route.post('/finish_account', definePasswordAccount)
-  route.post('/authenticate', authenticateAccount)
-  route.post('/add_friend', { onRequest: [verifyJWT] }, addFriend)
-  route.get('/get_invites', { onRequest: [verifyJWT] }, getInvites)
-  route.get('/current_user', { onRequest: [verifyJWT] }, getCurrentAccount)
-  route.post('/accept_or_not_invite', { onRequest: [verifyJWT] }, acceptOrNotInvite)
-  route.get('/conversation/:friendEmail', { onRequest: [verifyJWT] }, getConversation)
-  route.post('/conversation/:secretKey', { onRequest: [verifyJWT] }, sendMessageConversation)
-}
+  route.post("/", createAccount);
+  route.post("/finish_account", definePasswordAccount);
+  route.post("/authenticate", authenticateAccount);
+  route.post("/add_friend", { onRequest: [verifyJWT] }, addFriend);
+  route.get("/get_invites", { onRequest: [verifyJWT] }, getInvites);
+  route.get("/current_user", { onRequest: [verifyJWT] }, getCurrentAccount);
+  route.post(
+    "/accept_or_not_invite",
+    { onRequest: [verifyJWT] },
+    acceptOrNotInvite
+  );
+  route.get(
+    "/conversation/:friendEmail",
+    { onRequest: [verifyJWT] },
+    getConversation
+  );
+  route.post(
+    "/conversation/:secretKey",
+    { onRequest: [verifyJWT] },
+    sendMessageConversation
+  );
+};
